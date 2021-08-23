@@ -25,19 +25,19 @@
   <h4>Изменить пользователя по ID и нескольким полям:</h4>
 
 
-  <form th:method="PATCH" th:action="@{{id}(id=${user.getId()})}" th:object="${user}">
+  <form th:method="PATCH" action= "/admin/update" th:object="${user}">
     <br>
-    <label for="id">ID</label>
-    <input type="text" th:field="*{id}" th:disabled="true" id="ID"/>
+    <label for="id">ID</label><br>
+    <input type="text" th:field="*{id}" id="ID"/>
     <br><br>
-    <label for="id">Login</label>
+    <label for="id">Login</label><br>
     <input type="text" th:field="*{login}" id="login"/>
     <br>
-    <label for="id">password</label>
+    <label for="id">password</label><br>
     <input type="text" th:field="*{password}" id="password"/>
     <br>
-    <label for="id">Roles</label>
-    <input type="text" th:field="*{roles}" id="roles"/>
+    <label for="id">Roles</label><br>
+    <input type="text" name="user_roles" required placeholder="roles (admin, user, ... )">
     <br>
     <label for="firstName">firstName</label><br>
     <input type="text" th:field="*{firstName}" id="firstName"/>

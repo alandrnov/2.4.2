@@ -4,14 +4,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import web.models.Role;
 import web.models.User;
 import web.service.UserService;
-
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Controller
 public class UserController {
@@ -91,10 +86,9 @@ public class UserController {
         return "update";
     }
 
-    @PatchMapping("admin/{id}/update")
-    public String updateUser(@ModelAttribute("user") User u, @RequestParam("user_roles") String rol) {
-    // public String updateUser( @ModelAttribute("user") User u){
-        u.setRoles(service.getRolesFromText(rol));
+    @PatchMapping("/admin/update")
+   public String updateUser(@ModelAttribute("user") User u, @RequestParam("user_roles") String rol) {
+          u.setRoles(service.getRolesFromText(rol));
 
         service.updateUser(u);
         return "redirect:/admin";

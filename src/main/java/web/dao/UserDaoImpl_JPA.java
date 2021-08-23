@@ -1,7 +1,6 @@
 package web.dao;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import web.models.Role;
 import web.models.User;
 
@@ -73,7 +72,7 @@ public class UserDaoImpl_JPA implements UserDao {
 
     @Override
     public void addUser(User user) {
-        entityManager.merge(user);
+        entityManager.persist(user);
     }
 
     @Override
