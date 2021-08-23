@@ -60,7 +60,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateUser(long id, String log, String pas, String rol, String fn, String sn, String c) {
-        userDao.updateUser(id, log, pas, rol, fn, sn, c);
+    public void updateUser(User user) {
+        userDao.updateUser(user);
+    }
+    @Transactional
+    @Override
+    public List<Role> getAllRoles() {
+        return userDao.getAllRoles();
+    }
+    @Transactional
+    @Override
+    public User getUserById(Long id) {
+        return userDao.getUserById(id);
     }
 }

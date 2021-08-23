@@ -4,15 +4,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import web.models.Role;
 import web.models.User;
 import web.service.UserService;
 
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 public class UserController {
 
     private UserService service;
+    private User u;
+    private String rol;
+
     public UserController(UserService service) {
         this.service = service;
     }
@@ -75,21 +82,21 @@ public class UserController {
     }
 
 
-    @GetMapping("/admin/update")
-    public String update() {
+    @GetMapping("admin/{id}/update")
+    public String updateUser(@PathVariable("id") Long id, Model model) {
+        //List<Role> allRoles = service.getAllRoles();
+        //User u = service.getUserById(id);
+        model.addAttribute("user", service.getUserById(id));
+        //model.addAttribute("allRoles", allRoles);
         return "update";
     }
 
-    @PatchMapping("/admin/update")
-    public String update(@RequestParam("update_id") long id,
-                         @RequestParam("update_log") String log,
-                         @RequestParam("update_pas") String pas,
-                         @RequestParam("update_rol") String rol,
-                         @RequestParam("update_fn") String fn,
-                         @RequestParam("update_sn") String sn,
-                         @RequestParam("update_c") String c)
-    {
-        service.updateUser(id, log, pas, rol, fn, sn, c);
+    @PatchMapping("admin/{id}/update")
+    public String updateUser(@ModelAttribute("user") User u, @RequestParam("user_roles") String rol) {
+    // public String updateUser( @ModelAttribute("user") User u){
+        u.setRoles(service.getRolesFromText(rol));
+
+        service.updateUser(u);
         return "redirect:/admin";
     }
 

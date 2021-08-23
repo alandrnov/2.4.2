@@ -1,6 +1,7 @@
 package web.dao;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import web.models.Role;
 import web.models.User;
 
@@ -56,7 +57,7 @@ public class UserDaoImpl_JPA implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        return entityManager.createQuery("select u from User u", User.class).getResultList();
+        return entityManager.createQuery("select distinct u from User u join fetch u.roles", User.class).getResultList();
     }
 
     @Override
@@ -66,13 +67,13 @@ public class UserDaoImpl_JPA implements UserDao {
 
     @Override
     public User getUserByLogin(String login) {
-        return entityManager.createQuery("select u from User u where u.login = :login", User.class)
+        return entityManager.createQuery("select u from User u join fetch u.roles where u.login = :login", User.class)
                 .setParameter("login", login).getSingleResult();
     }
 
     @Override
     public void addUser(User user) {
-        entityManager.persist(user);
+        entityManager.merge(user);
     }
 
     @Override
@@ -82,15 +83,24 @@ public class UserDaoImpl_JPA implements UserDao {
     }
 
     @Override
-    public void updateUser(long id, String log, String pas, String rol, String fn, String sn, String c) {
-        User u = entityManager.getReference(User.class, id);
-
-        if (   log.length() > 0 )   {   u.setLogin(log);                            }
-        if (   pas.length() > 0 )   {   u.setPassword(pas);                         }
-        if (   rol.length() > 0 )   {   u.setRoles(   getRolesFromText(rol)   );    }
-        if (   fn.length() > 0  )   {   u.setFirstName(fn);                         }
-        if (   sn.length() > 0  )   {   u.setSecondName(sn);                        }
-        if (   c.length() > 0   )   {   u.setCellphone(c);                          }
+    public void updateUser(User user) {
+        //User usertobeUpdated = getUserById(id);
+        entityManager.merge(user);
     }
+
+    @Override
+
+    public List<Role> getAllRoles() {
+        return entityManager.createQuery("select r from Role r", Role.class).getResultList();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        User u = entityManager.createQuery("select u from User u join fetch u.roles where u.id = :id", User.class)
+                .setParameter("id", id)
+                .getSingleResult();
+        return u;
+    }
+
 
 }

@@ -23,6 +23,9 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void updateUser(long id, String log, String pas, String rol, String fn, String sn, String c);
+    void updateUser(User user);
 
+    List<Role> getAllRoles();
+
+    User getUserById(Long id);
 }

@@ -44,6 +44,15 @@
       <td th:text="${user.getCellphone()}">cellphone</td>
     </tr>
   </table>
+  <br>
+  <form action="/admin/update">
+    <button>Редактировать пользователя</button>
+  </form>
+  <td>
+    <form th:method="GET" th:action="@{/admin/{id}/update(id=${user.getId()})}">
+      <input type="submit" value="Edit">
+    </form>
+  </td>
 
 </center>
 </body>
