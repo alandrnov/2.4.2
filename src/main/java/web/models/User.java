@@ -2,6 +2,8 @@ package web.models;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -10,6 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,22 +25,18 @@ public class User implements UserDetails {
     @Column
     private String password;
 
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
-    /*@JoinTable(
-            name = "users_roles"
-            , joinColumns = @JoinColumn(name = "users_id")
-            , inverseJoinColumns = @JoinColumn(name = "roles_id")
-    )*/
-    private Set<Role> roles;
-
-    @Column
+    @Column (name = "first_name")
     private String firstName;
 
-    @Column
+    @Column(name = "second_name")
     private String secondName;
 
     @Column
     private String cellphone;
+
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
+
+    private Set<Role> roles;
 
 
     public User() {
@@ -76,7 +75,8 @@ public class User implements UserDetails {
         return password;
     }
     public void setPassword(String password) {
-        this.password = password;
+
+        this.password = passwordEncoder.encode(password);
     }
 
     @Override
@@ -102,6 +102,7 @@ public class User implements UserDetails {
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -109,6 +110,7 @@ public class User implements UserDetails {
     public String getSecondName() {
         return secondName;
     }
+
     public void setSecondName(String secondName) {
         this.secondName = secondName;
     }

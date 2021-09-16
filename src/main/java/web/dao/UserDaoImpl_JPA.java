@@ -1,58 +1,18 @@
 package web.dao;
 
+
 import org.springframework.stereotype.Repository;
-import web.models.Role;
 import web.models.User;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class UserDaoImpl_JPA implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Override
-    public Role getRoleByName(String name) {
-        try {
-            entityManager
-                    .createQuery("select r from Role r where r.role = :name", Role.class)
-                    .setParameter("name", name)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            Role r = new Role();
-            r.setRole(name);
-            entityManager.persist(r);
-        }
-
-        return entityManager
-                .createQuery("select r from Role r where r.role = :name", Role.class)
-                .setParameter("name", name)
-                .getSingleResult();
-    }
-
-    @Override
-    public Set<Role> getRolesFromText(String text) {
-        Set<Role> roles = new HashSet<>();
-
-        text = text.toLowerCase();
-
-        if ( text.contains("admin") ) {
-            Role role = getRoleByName("ROLE_ADMIN");
-            roles.add(role);
-        }
-        if ( text.contains("user") ) {
-            Role role = getRoleByName("ROLE_USER");
-            roles.add(role);
-        }
-
-        return roles;
-    }
 
     @Override
     public List<User> getAllUsers() {
@@ -83,15 +43,9 @@ public class UserDaoImpl_JPA implements UserDao {
 
     @Override
     public void updateUser(User user) {
-        //User usertobeUpdated = getUserById(id);
-        entityManager.merge(user);
+         entityManager.merge(user);
     }
 
-    @Override
-
-    public List<Role> getAllRoles() {
-        return entityManager.createQuery("select r from Role r", Role.class).getResultList();
-    }
 
     @Override
     public User getUserById(Long id) {

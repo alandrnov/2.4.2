@@ -1,14 +1,16 @@
 package web.controllers;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 import web.models.User;
 import web.service.UserService;
+
 import java.security.Principal;
 
 @Controller
+
 public class UserController {
 
     private UserService service;
@@ -18,92 +20,16 @@ public class UserController {
     public UserController(UserService service) {
         this.service = service;
     }
-
-
-
-
-
-    @GetMapping
-    public String index(Principal principal) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-        return String.format("redirect:/profile/%s", principal.getName());
+    @GetMapping("/profile/{login}")
+    public String index(Model model, Principal principal) {
+        User user = service.getUserByLogin(principal.getName());
+        model.addAttribute("user", user);
+        return "user";
     }
-
 
     @GetMapping("/login")
     public String login() {
         return "login";
-    }
-
-
-    @GetMapping("/profile/{login}")
-    public String user(@PathVariable("login") String log, Model model) {
-        String logAuth = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        if (   log.equals( logAuth )   ) {
-            model.addAttribute("user", service.getUserByLogin(log));
-            model.addAttribute("userAuth", service.getUserByLogin(logAuth));
-            return "user";
-        } else if (   service.getUserByLogin(logAuth).isAdmin()   ) {
-            model.addAttribute("user", service.getUserByLogin(log));
-            model.addAttribute("userAuth", service.getUserByLogin(logAuth));
-            return "user";
-        }
-
-        return String.format("redirect:/profile/%s", logAuth);
-    }
-
-
-    @GetMapping("/admin")
-    public String admin(Model model) {
-        model.addAttribute("all_users", service.getAllUsers());
-        return "admin";
-    }
-
-
-    @GetMapping("/admin/create")
-    public String create(Model model) {
-        model.addAttribute("new_user", new User());
-        return "create";
-    }
-
-    @PostMapping("/admin/create")
-    public String create(@ModelAttribute("new_user") User u, @RequestParam("new_user_roles") String rol) {
-        u.setRoles(service.getRolesFromText(rol));
-        service.addUser(u);
-        return "redirect:/admin";
-    }
-
-
-    @GetMapping("admin/{id}/update")
-    public String updateUser(@PathVariable("id") Long id, Model model) {
-        //List<Role> allRoles = service.getAllRoles();
-        //User u = service.getUserById(id);
-        model.addAttribute("user", service.getUserById(id));
-        //model.addAttribute("allRoles", allRoles);
-        return "update";
-    }
-
-    @PatchMapping("/admin/update")
-   public String updateUser(@ModelAttribute("user") User u, @RequestParam("user_roles") String rol) {
-          u.setRoles(service.getRolesFromText(rol));
-
-        service.updateUser(u);
-        return "redirect:/admin";
-    }
-
-
-    @GetMapping("/admin/delete")
-    public String delete() {
-        return "delete";
-    }
-
-    @DeleteMapping("/admin/delete")
-    public String delete(@RequestParam("delete_id") Long id) {
-        service.deleteUser(id);
-        return "redirect:/admin";
     }
 
 }

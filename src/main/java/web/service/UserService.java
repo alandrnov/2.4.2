@@ -1,17 +1,13 @@
 package web.service;
 
 
-import web.models.Role;
+
 import web.models.User;
 
 import java.util.List;
-import java.util.Set;
 
 public interface UserService {
 
-    Role getRoleByName(String name);
-
-    public Set<Role> getRolesFromText(String text);
 
     List<User> getAllUsers();
 
@@ -25,7 +21,7 @@ public interface UserService {
 
     void updateUser(User user);
 
-    List<Role> getAllRoles();
+//    List<Role> getAllRoles();
 
     User getUserById(Long id);
 }

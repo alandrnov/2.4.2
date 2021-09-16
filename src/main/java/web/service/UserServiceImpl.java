@@ -1,13 +1,12 @@
 package web.service;
 
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.dao.UserDao;
-import web.models.Role;
 import web.models.User;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,16 +16,6 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
     }
 
-    @Transactional
-    @Override
-    public Role getRoleByName(String name) {
-        return userDao.getRoleByName(name);
-    }
-
-    @Override
-    public Set<Role> getRolesFromText(String text) {
-        return userDao.getRolesFromText(text);
-    }
 
     @Transactional(readOnly = true)
     @Override
@@ -63,11 +52,7 @@ public class UserServiceImpl implements UserService {
     public void updateUser(User user) {
         userDao.updateUser(user);
     }
-    @Transactional
-    @Override
-    public List<Role> getAllRoles() {
-        return userDao.getAllRoles();
-    }
+
     @Transactional
     @Override
     public User getUserById(Long id) {
